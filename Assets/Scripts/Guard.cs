@@ -80,20 +80,17 @@ public class Guard : MonoBehaviour {
 
         if (!isAtA) target = patrollA + origin;
         else target = patrollB + origin;
-        GetComponentInChildren<SpriteRenderer>().flipX = ((target - transform.position).x < 0);
-        if (GetComponentInChildren<SpriteRenderer>().flipX)
-        {
-            fov.viewAngleOffset = 270;
-        }
-        else
-        {
-            fov.viewAngleOffset = 90;
-        }
+        fov.reverseAngle = GetComponentInChildren<SpriteRenderer>().flipX = ((target - transform.position).x < 0);
         GetComponent<Animator>().SetTrigger("Walk");
 
         do
         {
             transform.position += Vector3.ClampMagnitude(target - transform.position, Mathf.Min(d = Vector3.Distance(transform.position, target), Time.deltaTime * 2f));
+            if (GameManager.Instance.hasWon)
+            {
+                GetComponent<Animator>().SetTrigger("Idle");
+                yield break;
+            }
             yield return null;
         } while (d > 0.05f);
 
@@ -108,6 +105,7 @@ public class Guard : MonoBehaviour {
             if (Physics2D.Raycast(transform.position, (player.transform.position - transform.position).normalized, (player.transform.position - transform.position).magnitude, LayerMask.GetMask("Ground")).transform == null)
             {
                 Debug.Log("[" + gameObject.name + "] Enemy Spotted!");
+                GameManager.Instance.PlayerLose();
                 Destroy(player.gameObject);
             }
         }

@@ -20,9 +20,12 @@ public class GameManager : MonoBehaviour {
     public static GameManager Instance { get; private set; }
 
     public GameObject ui;
+    public GameObject winScr;
+    public Text winTxt;
     public GameObject pausePanel;
 
     public LineRenderer lr;
+    public bool hasWon;
 
     private void Awake()
     {
@@ -37,6 +40,7 @@ public class GameManager : MonoBehaviour {
     public void FinishPlayerTurn()
     {
         Debug.Log("[GameManager] FinishPlayerTurn()");
+        ctr.canMove = true;
         currentTurn = Turn.Enemy; 
         isRunning = false;
         lr.positionCount = 0;
@@ -45,12 +49,14 @@ public class GameManager : MonoBehaviour {
 
     public void Pause()
     {
+        if (hasWon) return;
         isPaused = true;
         pausePanel.SetActive(isPaused);
         Time.timeScale = 0;
     }
     public void Unpause()
     {
+        if (hasWon) return;
         isPaused = false;
         pausePanel.SetActive(isPaused);
         Time.timeScale = 1;
@@ -94,8 +100,9 @@ public class GameManager : MonoBehaviour {
         switch (currentTurn)
         {
             case Turn.Player:
-                StartCoroutine(ctr.FocusOnPlayer(player, 0.2f, 25, () =>
+                StartCoroutine(ctr.FocusOnPlayer(player, 0.2f, 50, () =>
                 {
+                    ctr.canMove = false;
                     StartCoroutine(ctr.Transition(2));
                     StartCoroutine(player.DoNextTurn());
                 }));
@@ -131,7 +138,9 @@ public class GameManager : MonoBehaviour {
         if (trig <= 0)
         {
             Debug.Log("[GameManager] Player has won");
-            //Win :)
+            hasWon = true;
+            winScr.SetActive(true);
+            winTxt.text = "You Win!";
             yield break;
         }
         yield return new WaitForSeconds(maxTime);
@@ -144,6 +153,16 @@ public class GameManager : MonoBehaviour {
             ui.SetActive(true);
         }));
     }
+    public void PlayerLose()
+    {
+        winScr.SetActive(true);
+        winTxt.text = "You Lose";
+    }
+    public void ReloadLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     public void UpdateUI(List<Move> moves)
     {
         // Line Renderer

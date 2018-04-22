@@ -101,7 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moves: []
   animationCountdown: 0.5
-  delayBetweenMoves: 0.05
+  delayBetweenMoves: 0.1
   range: 13
   animationLerpPow: 3
   anim: {fileID: 95827723513360930}
@@ -149,7 +149,7 @@ SpriteRenderer:
   m_SortingOrder: 2
   m_Sprite: {fileID: 21300026, guid: 2ac030fa4eb56e54395d72d10fb28be3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1, y: 1}

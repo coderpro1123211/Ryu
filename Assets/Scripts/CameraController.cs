@@ -9,6 +9,12 @@ public class CameraController : MonoBehaviour {
     [Range(0,1)]
     public float trans;
 
+    public float xMin;
+    public float xMax;
+
+    public bool canMove;
+    public Vector2 mouseLast;
+
     Camera c;
 
     private void Start()
@@ -29,11 +35,27 @@ public class CameraController : MonoBehaviour {
         c.targetTexture = rt;
     }
 
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(2))
+        {
+            mouseLast = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        }
+        if (Input.GetMouseButton(2))
+        {
+            Vector2 delta = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - mouseLast;
+            transform.position = new Vector3(Mathf.Clamp(transform.position.x - delta.x, xMin, xMax), transform.position.y, transform.position.z);
+            mouseLast = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        }
+    }
+
     public IEnumerator FocusOnPlayer(PlayerController pl, float sTime, float mSpd, System.Action callback)
     {
+        canMove = false;
         Vector3 vel = Vector2.zero;
         Vector3 target = pl.transform.position + Vector3.back * 10;
         target.y = transform.position.y;
+        target.x = Mathf.Clamp(target.x, xMin, xMax);
 
         while (Vector2.Distance(transform.position, target) > 0.1f)
         {
@@ -41,6 +63,7 @@ public class CameraController : MonoBehaviour {
             yield return null;
         }
         Debug.Log("[CameraController] Focus Finished");
+        canMove = true;
         callback();
     }
 
