@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
@@ -28,7 +29,7 @@ public class GameManager : MonoBehaviour {
         if (Instance != null) { Destroy(gameObject); return; }
         Instance = this;
         Unpause();
-        lr = ui.GetComponentInChildren<LineRenderer>();
+        //lr = ui.GetComponentInChildren<LineRenderer>();
         ctr = FindObjectOfType<CameraController>();
         movesLeft = moveLimit;
     }
@@ -58,6 +59,10 @@ public class GameManager : MonoBehaviour {
     {
         if (isPaused) Unpause();
         else Pause();
+    }
+    public void GotoMainMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 
     public bool CanRegisterMove()

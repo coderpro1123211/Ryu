@@ -69,16 +69,16 @@ Material:
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
-    - _Offset: 0.9
+    - _Offset: 0.95
     - _Parallax: 0.02
     - _Rep: 50
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _Trans: 1
+    - _Trans: 0
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _Tint: {r: 0.347, g: 0.57586205, b: 0.191, a: 1}
+    - _Tint: {r: 0.307675, g: 0.397, b: 0.15403602, a: 1}
