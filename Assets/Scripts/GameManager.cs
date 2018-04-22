@@ -94,8 +94,11 @@ public class GameManager : MonoBehaviour {
         switch (currentTurn)
         {
             case Turn.Player:
-                StartCoroutine(ctr.Transition(2));
-                StartCoroutine(player.DoNextTurn());
+                StartCoroutine(ctr.FocusOnPlayer(player, 0.2f, 25, () =>
+                {
+                    StartCoroutine(ctr.Transition(2));
+                    StartCoroutine(player.DoNextTurn());
+                }));
                 ui.SetActive(false);
                 movesLeft = moveLimit;
                 break;
@@ -135,8 +138,11 @@ public class GameManager : MonoBehaviour {
         StartCoroutine(ctr.Transition(-2));
         yield return new WaitForSeconds(0.5f);
         Debug.Log("[GameManager] EnemyTurnFinish()");
-        isRunning = false;
-        ui.SetActive(true);
+        StartCoroutine(ctr.FocusOnPlayer(player, 0.5f, 10, () =>
+        {
+            isRunning = false;
+            ui.SetActive(true);
+        }));
     }
     public void UpdateUI(List<Move> moves)
     {

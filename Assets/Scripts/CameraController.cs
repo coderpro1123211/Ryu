@@ -23,8 +23,25 @@ public class CameraController : MonoBehaviour {
 
         Camera.main.cullingMask = ~cullingMask;
 
-        RenderTexture rt = new RenderTexture(Mathf.FloorToInt(c.orthographicSize * 128 * c.aspect), Mathf.FloorToInt(c.orthographicSize * 128), 24, RenderTextureFormat.ARGB32);
+        RenderTexture rt = new RenderTexture(Mathf.FloorToInt(c.orthographicSize * 32 * c.aspect), Mathf.FloorToInt(c.orthographicSize * 32), 24, RenderTextureFormat.ARGB32);
+        rt.wrapMode = TextureWrapMode.Clamp;
+        rt.filterMode = FilterMode.Point;
         c.targetTexture = rt;
+    }
+
+    public IEnumerator FocusOnPlayer(PlayerController pl, float sTime, float mSpd, System.Action callback)
+    {
+        Vector3 vel = Vector2.zero;
+        Vector3 target = pl.transform.position + Vector3.back * 10;
+        target.y = transform.position.y;
+
+        while (Vector2.Distance(transform.position, target) > 0.1f)
+        {
+            transform.position = Vector3.SmoothDamp(transform.position, target, ref vel, sTime, mSpd, Time.deltaTime); 
+            yield return null;
+        }
+        Debug.Log("[CameraController] Focus Finished");
+        callback();
     }
 
     public IEnumerator Transition(float spd)

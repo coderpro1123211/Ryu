@@ -13,6 +13,8 @@ public class FieldOfView : MonoBehaviour {
     public LayerMask targetMask;
 	public LayerMask obstacleMask;
 
+    public bool reverseAngle;
+
 	[HideInInspector]
 	public List<Transform> visibleTargets = new List<Transform>();
 
@@ -58,7 +60,7 @@ public class FieldOfView : MonoBehaviour {
 		List<Vector3> viewPoints = new List<Vector3> ();
 		ViewCastInfo oldViewCast = new ViewCastInfo ();
 		for (int i = 0; i <= stepCount; i++) {
-			float angle = ((-transform.eulerAngles.z) - viewAngle / 2 + stepAngleSize * i) + viewAngleOffset;
+			float angle = ((-transform.eulerAngles.z) - viewAngle / 2 + stepAngleSize * i) + (reverseAngle?-viewAngleOffset:viewAngleOffset);
 			ViewCastInfo newViewCast = ViewCast (angle);
 
 			if (i > 0) {

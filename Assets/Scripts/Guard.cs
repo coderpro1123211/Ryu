@@ -37,13 +37,27 @@ public class Guard : MonoBehaviour {
         if (!isAtA) target = patrollA + origin;
         else target = patrollB + origin;
 
-        return Vector3.Distance(transform.position, target);
+        return Vector3.Distance(transform.position, target) / 2f;
     }
 
     public float GetFalloff(float d, Vector2 pos)
     {
         float p = 0.1f;
-        if (Vector2.SignedAngle((pos - (Vector2)transform.position).normalized, GetComponentInChildren<SpriteRenderer>().flipX ? Vector2.left : Vector2.right) < fov.viewAngle / 2)
+        if (Mathf.Abs(Vector2.SignedAngle((pos - (Vector2)transform.position).normalized, GetComponentInChildren<SpriteRenderer>().flipX ? Vector2.left : Vector2.right)) < fov.viewAngle / 2)
+        {
+            if (d < fov.viewRadius)
+            {
+                p = 1;
+            }
+        }
+
+        return (Mathf.Pow(falloffRange - d, falloffPow) / Mathf.Pow(falloffRange, falloffPow)) * p;
+    }
+
+    public float GetFalloff(float d, Vector2 pos, out float pp)
+    {
+        float p = 0.1f;
+        if (Mathf.Abs(pp=Vector2.SignedAngle((pos - (Vector2)transform.position).normalized, GetComponentInChildren<SpriteRenderer>().flipX ? Vector2.left : Vector2.right)) < fov.viewAngle / 2)
         {
             if (d < fov.viewRadius)
             {
@@ -67,17 +81,27 @@ public class Guard : MonoBehaviour {
         if (!isAtA) target = patrollA + origin;
         else target = patrollB + origin;
         GetComponentInChildren<SpriteRenderer>().flipX = ((target - transform.position).x < 0);
+        if (GetComponentInChildren<SpriteRenderer>().flipX)
+        {
+            fov.viewAngleOffset = 270;
+        }
+        else
+        {
+            fov.viewAngleOffset = 90;
+        }
         GetComponent<Animator>().SetTrigger("Walk");
 
         do
         {
-            transform.position += Vector3.ClampMagnitude(target - transform.position, Mathf.Min(d = Vector3.Distance(transform.position, target), Time.deltaTime * 1f));
+            transform.position += Vector3.ClampMagnitude(target - transform.position, Mathf.Min(d = Vector3.Distance(transform.position, target), Time.deltaTime * 2f));
             yield return null;
         } while (d > 0.05f);
 
         float r = Random.value;
 
-        Debug.Log("[" + gameObject.name + "] " + r + ":" + GetFalloff(d, player.transform.position));
+        float p;
+        Debug.Log("[" + gameObject.name + "] " + r + ":" + GetFalloff(d, player.transform.position, out p));
+        Debug.Log("[" + gameObject.name + "] " + p);
         Debug.Log("[" + gameObject.name + "] " + d + " units");
         if (r < GetFalloff(d, player.transform.position))
         {

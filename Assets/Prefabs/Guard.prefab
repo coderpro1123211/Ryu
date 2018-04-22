@@ -219,8 +219,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c941bd8452e4f84385fde4d15001505, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  falloffRange: 10
-  falloffPow: 0.5
+  falloffRange: 7.1
+  falloffPow: 0.55
   patrollA: {x: 0, y: 0}
   patrollB: {x: 4.25, y: 0}
   player: {fileID: 0}
